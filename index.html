@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#173f3a">
+  <title>守護「腎」利人生｜糖尿病腎臟病變衛教</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="stage" aria-label="簡報播放區">
+    <div id="deck" tabindex="0" aria-live="polite">
+      <img id="slide" src="slides/slide-01.png" alt="第 1 張投影片" draggable="false">
+    </div>
+
+    <header id="topbar" class="chrome">
+      <div class="brand">守護「腎」利人生</div>
+      <div id="status" aria-label="目前頁碼">1 / 25</div>
+    </header>
+
+    <nav id="controls" class="chrome" aria-label="簡報控制">
+      <button id="prev" type="button" aria-label="上一頁" title="上一頁（← / Page Up）">‹</button>
+      <button id="overview" type="button" aria-label="投影片總覽" title="投影片總覽（O）">▦</button>
+      <button id="fullscreen" type="button" aria-label="全螢幕" title="全螢幕（F）">⛶</button>
+      <button id="next" type="button" aria-label="下一頁" title="下一頁（→ / Page Down / 空白鍵）">›</button>
+    </nav>
+
+    <div id="progress" aria-hidden="true"><span></span></div>
+
+    <section id="help" class="panel" hidden aria-label="操作說明">
+      <h2>演講操作</h2>
+      <div class="key-grid">
+        <span><kbd>→</kbd> <kbd>Page Down</kbd> <kbd>Space</kbd></span><b>下一頁</b>
+        <span><kbd>←</kbd> <kbd>Page Up</kbd></span><b>上一頁</b>
+        <span><kbd>F</kbd></span><b>全螢幕</b>
+        <span><kbd>O</kbd></span><b>投影片總覽</b>
+        <span><kbd>H</kbd></span><b>顯示／隱藏控制列</b>
+        <span><kbd>?</kbd></span><b>操作說明</b>
+      </div>
+      <button type="button" class="close" data-close>開始播放</button>
+    </section>
+
+    <section id="overviewPanel" class="panel overview" hidden aria-label="投影片總覽">
+      <div class="overview-head"><h2>投影片總覽</h2><button type="button" class="icon-close" data-close aria-label="關閉">×</button></div>
+      <div id="thumbs"></div>
+    </section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
