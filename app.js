@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const TOTAL = 25;
+  const TOTAL = 28;
   const slide = document.querySelector('#slide');
   const stage = document.querySelector('#stage');
   const status = document.querySelector('#status');
