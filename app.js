@@ -29,8 +29,9 @@
   let touchStartX = null;
   let wakeTimer;
   let notes = loadNotes();
+  const ASSET_VERSION = '20260802-brand-finerenone';
 
-  const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png`;
+  const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png?v=${ASSET_VERSION}`;
 
   function migrateNotes(source, insertsAfter) {
     const migrated = {};
