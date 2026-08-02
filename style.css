@@ -3,7 +3,7 @@
 html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#07100f;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",sans-serif}
 button{font:inherit}
 #stage{position:relative;width:100%;height:100%;display:grid;place-items:center;background:radial-gradient(circle at 50% 45%,#28433e 0,#111d1b 55%,#050807 100%);isolation:isolate}
-#deck{width:100%;height:100%;display:grid;place-items:center;outline:none;cursor:none;transition:padding-right .25s ease}
+#deck{width:100%;height:100%;display:grid;place-items:center;outline:none;cursor:default;transition:padding-right .25s ease}
 #stage.notes-open #deck{padding-right:min(390px,32vw)}
 #slide{display:block;width:100%;height:100%;object-fit:contain;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 12px 35px rgba(0,0,0,.45))}
 .chrome{position:fixed;z-index:10;transition:opacity .25s ease,transform .25s ease}
