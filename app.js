@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const TOTAL = 33;
+  const TOTAL = 34;
   const slide = document.querySelector('#slide');
   const slideVideo = document.querySelector('#slideVideo');
   const stage = document.querySelector('#stage');
@@ -20,11 +20,12 @@
   const copyNotes = document.querySelector('#copyNotes');
   const downloadNotes = document.querySelector('#downloadNotes');
   const clearNote = document.querySelector('#clearNote');
-  const NOTES_KEY = 'dka-education-slide-notes-v4';
+  const NOTES_KEY = 'dka-education-slide-notes-v5';
   const OLD_NOTES_KEYS = [
-    {key: 'dka-education-slide-notes-v3', insertsAfter: [13]},
-    {key: 'dka-education-slide-notes-v2', insertsAfter: [13, 15]},
-    {key: 'dka-education-slide-notes-v1', insertsAfter: [10, 12, 14, 20, 24]}
+    {key: 'dka-education-slide-notes-v4', insertsAfter: [15]},
+    {key: 'dka-education-slide-notes-v3', insertsAfter: [13, 14]},
+    {key: 'dka-education-slide-notes-v2', insertsAfter: [13, 14, 15]},
+    {key: 'dka-education-slide-notes-v1', insertsAfter: [10, 12, 13, 14, 20, 24]}
   ];
   const VIDEO_SLIDES = {
     14: {src: 'media/sglt2i-mechanism.mp4', label: 'SGLT2i 機轉影片'}
@@ -34,7 +35,7 @@
   let touchStartX = null;
   let wakeTimer;
   let notes = loadNotes();
-  const ASSET_VERSION = '20260802-sglt2i-video';
+  const ASSET_VERSION = '20260802-glp1ra-mechanism';
 
   const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png?v=${ASSET_VERSION}`;
   const mediaPathFor = path => `${path}?v=${ASSET_VERSION}`;
