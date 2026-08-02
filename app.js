@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const TOTAL = 31;
+  const TOTAL = 32;
   const slide = document.querySelector('#slide');
   const stage = document.querySelector('#stage');
   const status = document.querySelector('#status');
@@ -19,8 +19,11 @@
   const copyNotes = document.querySelector('#copyNotes');
   const downloadNotes = document.querySelector('#downloadNotes');
   const clearNote = document.querySelector('#clearNote');
-  const NOTES_KEY = 'dka-education-slide-notes-v2';
-  const OLD_NOTES_KEY = 'dka-education-slide-notes-v1';
+  const NOTES_KEY = 'dka-education-slide-notes-v3';
+  const OLD_NOTES_KEYS = [
+    {key: 'dka-education-slide-notes-v2', insertsAfter: [15]},
+    {key: 'dka-education-slide-notes-v1', insertsAfter: [10, 14, 20, 24]}
+  ];
   let current = Math.min(TOTAL, Math.max(1, Number(location.hash.slice(1)) || 1));
   let controlsVisible = true;
   let touchStartX = null;
@@ -28,6 +31,17 @@
   let notes = loadNotes();
 
   const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png`;
+
+  function migrateNotes(source, insertsAfter) {
+    const migrated = {};
+    Object.entries(source).forEach(([key, value]) => {
+      const oldSlide = Number(key);
+      if (!Number.isFinite(oldSlide)) return;
+      const shift = insertsAfter.filter(marker => marker < oldSlide).length;
+      migrated[oldSlide + shift] = value;
+    });
+    return migrated;
+  }
 
   function show(n, updateHistory = true) {
     const next = Math.min(TOTAL, Math.max(1, n));
@@ -71,19 +85,16 @@
         const parsed = JSON.parse(saved);
         return parsed && typeof parsed === 'object' ? parsed : {};
       }
-      const oldSaved = localStorage.getItem(OLD_NOTES_KEY);
-      if (!oldSaved) return {};
-      const oldNotes = JSON.parse(oldSaved);
-      if (!oldNotes || typeof oldNotes !== 'object') return {};
-      const migrated = {};
-      Object.entries(oldNotes).forEach(([key, value]) => {
-        const oldSlide = Number(key);
-        if (!Number.isFinite(oldSlide)) return;
-        const shift = [10, 20, 24].filter(marker => marker < oldSlide).length;
-        migrated[oldSlide + shift] = value;
-      });
-      localStorage.setItem(NOTES_KEY, JSON.stringify(migrated));
-      return migrated;
+      for (const oldKey of OLD_NOTES_KEYS) {
+        const oldSaved = localStorage.getItem(oldKey.key);
+        if (!oldSaved) continue;
+        const oldNotes = JSON.parse(oldSaved);
+        if (!oldNotes || typeof oldNotes !== 'object') continue;
+        const migrated = migrateNotes(oldNotes, oldKey.insertsAfter);
+        localStorage.setItem(NOTES_KEY, JSON.stringify(migrated));
+        return migrated;
+      }
+      return {};
     } catch (_) {
       return {};
     }
