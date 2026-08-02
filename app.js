@@ -1,7 +1,8 @@
 (() => {
   'use strict';
-  const TOTAL = 32;
+  const TOTAL = 33;
   const slide = document.querySelector('#slide');
+  const slideVideo = document.querySelector('#slideVideo');
   const stage = document.querySelector('#stage');
   const status = document.querySelector('#status');
   const progress = document.querySelector('#progress span');
@@ -19,19 +20,24 @@
   const copyNotes = document.querySelector('#copyNotes');
   const downloadNotes = document.querySelector('#downloadNotes');
   const clearNote = document.querySelector('#clearNote');
-  const NOTES_KEY = 'dka-education-slide-notes-v3';
+  const NOTES_KEY = 'dka-education-slide-notes-v4';
   const OLD_NOTES_KEYS = [
-    {key: 'dka-education-slide-notes-v2', insertsAfter: [15]},
-    {key: 'dka-education-slide-notes-v1', insertsAfter: [10, 14, 20, 24]}
+    {key: 'dka-education-slide-notes-v3', insertsAfter: [13]},
+    {key: 'dka-education-slide-notes-v2', insertsAfter: [13, 15]},
+    {key: 'dka-education-slide-notes-v1', insertsAfter: [10, 12, 14, 20, 24]}
   ];
+  const VIDEO_SLIDES = {
+    14: {src: 'media/sglt2i-mechanism.mp4', label: 'SGLT2i 機轉影片'}
+  };
   let current = Math.min(TOTAL, Math.max(1, Number(location.hash.slice(1)) || 1));
   let controlsVisible = true;
   let touchStartX = null;
   let wakeTimer;
   let notes = loadNotes();
-  const ASSET_VERSION = '20260802-brand-finerenone';
+  const ASSET_VERSION = '20260802-sglt2i-video';
 
   const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png?v=${ASSET_VERSION}`;
+  const mediaPathFor = path => `${path}?v=${ASSET_VERSION}`;
 
   function migrateNotes(source, insertsAfter) {
     const migrated = {};
@@ -46,10 +52,28 @@
 
   function show(n, updateHistory = true) {
     const next = Math.min(TOTAL, Math.max(1, n));
-    if (next !== current) slide.animate([{opacity:.58},{opacity:1}], {duration:180,easing:'ease-out'});
+    const videoSlide = VIDEO_SLIDES[next];
+    if (next !== current) document.querySelector('#deck').animate([{opacity:.58},{opacity:1}], {duration:180,easing:'ease-out'});
     current = next;
-    slide.src = pathFor(current);
-    slide.alt = `第 ${current} 張投影片，共 ${TOTAL} 張`;
+    if (videoSlide) {
+      slide.hidden = true;
+      slideVideo.hidden = false;
+      if (slideVideo.dataset.slide !== String(current)) {
+        slideVideo.pause();
+        slideVideo.src = mediaPathFor(videoSlide.src);
+        slideVideo.poster = pathFor(current);
+        slideVideo.dataset.slide = String(current);
+      }
+      slideVideo.setAttribute('aria-label', `第 ${current} 張投影片：${videoSlide.label}`);
+    } else {
+      if (!slideVideo.hidden) {
+        slideVideo.pause();
+        slideVideo.hidden = true;
+      }
+      slide.hidden = false;
+      slide.src = pathFor(current);
+      slide.alt = `第 ${current} 張投影片，共 ${TOTAL} 張`;
+    }
     status.textContent = `${current} / ${TOTAL}`;
     progress.style.width = `${current / TOTAL * 100}%`;
     prevButton.disabled = current === 1;
