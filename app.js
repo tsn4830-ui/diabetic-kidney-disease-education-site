@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const TOTAL = 28;
+  const TOTAL = 31;
   const slide = document.querySelector('#slide');
   const stage = document.querySelector('#stage');
   const status = document.querySelector('#status');
@@ -19,7 +19,8 @@
   const copyNotes = document.querySelector('#copyNotes');
   const downloadNotes = document.querySelector('#downloadNotes');
   const clearNote = document.querySelector('#clearNote');
-  const NOTES_KEY = 'dka-education-slide-notes-v1';
+  const NOTES_KEY = 'dka-education-slide-notes-v2';
+  const OLD_NOTES_KEY = 'dka-education-slide-notes-v1';
   let current = Math.min(TOTAL, Math.max(1, Number(location.hash.slice(1)) || 1));
   let controlsVisible = true;
   let touchStartX = null;
@@ -65,8 +66,24 @@
 
   function loadNotes() {
     try {
-      const parsed = JSON.parse(localStorage.getItem(NOTES_KEY) || '{}');
-      return parsed && typeof parsed === 'object' ? parsed : {};
+      const saved = localStorage.getItem(NOTES_KEY);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      }
+      const oldSaved = localStorage.getItem(OLD_NOTES_KEY);
+      if (!oldSaved) return {};
+      const oldNotes = JSON.parse(oldSaved);
+      if (!oldNotes || typeof oldNotes !== 'object') return {};
+      const migrated = {};
+      Object.entries(oldNotes).forEach(([key, value]) => {
+        const oldSlide = Number(key);
+        if (!Number.isFinite(oldSlide)) return;
+        const shift = [10, 20, 24].filter(marker => marker < oldSlide).length;
+        migrated[oldSlide + shift] = value;
+      });
+      localStorage.setItem(NOTES_KEY, JSON.stringify(migrated));
+      return migrated;
     } catch (_) {
       return {};
     }
