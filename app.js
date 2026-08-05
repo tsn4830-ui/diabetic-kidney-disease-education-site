@@ -35,7 +35,7 @@
   let touchStartX = null;
   let wakeTimer;
   let notes = loadNotes();
-  const ASSET_VERSION = '20260802-glp1ra-mechanism';
+  const ASSET_VERSION = '20260805-egfr-uacr-risk-polish';
 
   const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png?v=${ASSET_VERSION}`;
   const mediaPathFor = path => `${path}?v=${ASSET_VERSION}`;
