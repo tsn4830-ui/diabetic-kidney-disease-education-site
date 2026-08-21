@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const TOTAL = 34;
+  const SYNC_BASE_URL = 'https://ntfy.sh/';
+  const ROOM_PARAM = 'room';
   const slide = document.querySelector('#slide');
   const slideVideo = document.querySelector('#slideVideo');
   const stage = document.querySelector('#stage');
@@ -36,9 +38,73 @@
   let wakeTimer;
   let notes = loadNotes();
   const ASSET_VERSION = '20260805-egfr-uacr-risk-polish';
+  const syncRoom = sanitizeRoom(new URLSearchParams(location.search).get(ROOM_PARAM));
+  const clientId = clientIdentity();
+  let syncSource = null;
 
   const pathFor = n => `slides/slide-${String(n).padStart(2, '0')}.png?v=${ASSET_VERSION}`;
   const mediaPathFor = path => `${path}?v=${ASSET_VERSION}`;
+
+  function clientIdentity() {
+    if (window.crypto?.randomUUID) return window.crypto.randomUUID();
+    return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+  }
+
+  function sanitizeRoom(value) {
+    return String(value || '')
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, '')
+      .slice(0, 8);
+  }
+
+  function roomTopic() {
+    return `dka-${syncRoom.toLowerCase()}`;
+  }
+
+  function updateAddress() {
+    const query = location.search || '';
+    history.replaceState(null, '', `${location.pathname}${query}#${current}`);
+  }
+
+  function syncPayloadFromEvent(data) {
+    try {
+      const parsed = JSON.parse(data);
+      if (typeof parsed?.message === 'string') return JSON.parse(parsed.message);
+      return parsed;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  async function publishSync() {
+    if (!syncRoom || location.protocol === 'file:') return;
+    try {
+      await fetch(`${SYNC_BASE_URL}${encodeURIComponent(roomTopic())}`, {
+        method: 'POST',
+        body: JSON.stringify({
+          type: 'slide',
+          slide: current,
+          sender: clientId,
+          ts: Date.now()
+        }),
+        mode: 'cors',
+        keepalive: true
+      });
+    } catch (_) {}
+  }
+
+  function connectSync() {
+    if (!syncRoom || location.protocol === 'file:' || !window.EventSource) return;
+    syncSource?.close();
+    syncSource = new EventSource(`${SYNC_BASE_URL}${encodeURIComponent(roomTopic())}/sse`);
+    syncSource.addEventListener('message', event => {
+      const payload = syncPayloadFromEvent(event.data);
+      if (!payload || payload.type !== 'slide' || payload.sender === clientId) return;
+      const slideNumber = Number(payload.slide);
+      if (!Number.isFinite(slideNumber) || slideNumber < 1 || slideNumber > TOTAL || slideNumber === current) return;
+      show(slideNumber, true, false);
+    });
+  }
 
   function migrateNotes(source, insertsAfter) {
     const migrated = {};
@@ -51,7 +117,7 @@
     return migrated;
   }
 
-  function show(n, updateHistory = true) {
+  function show(n, updateHistory = true, shouldPublish = true) {
     const next = Math.min(TOTAL, Math.max(1, n));
     const videoSlide = VIDEO_SLIDES[next];
     if (next !== current) document.querySelector('#deck').animate([{opacity:.58},{opacity:1}], {duration:180,easing:'ease-out'});
@@ -80,9 +146,10 @@
     prevButton.disabled = current === 1;
     nextButton.disabled = current === TOTAL;
     document.querySelectorAll('.thumb').forEach((item, index) => item.classList.toggle('current', index + 1 === current));
-    if (updateHistory) history.replaceState(null, '', `#${current}`);
+    if (updateHistory) updateAddress();
     [current + 1, current - 1].filter(n => n > 0 && n <= TOTAL).forEach(n => { const img = new Image(); img.src = pathFor(n); });
     updateNotePanel();
+    if (shouldPublish) publishSync();
   }
 
   function toggleChrome(force) {
@@ -248,6 +315,7 @@
   document.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', closePanels));
   document.addEventListener('keydown', onKey);
   window.addEventListener('hashchange', () => show(Number(location.hash.slice(1)) || 1, false));
+  window.addEventListener('beforeunload', () => syncSource?.close());
   stage.addEventListener('touchstart', event => {
     if (!notesPanel.hidden && notesPanel.contains(event.target)) {
       touchStartX = null;
@@ -264,7 +332,8 @@
   }, {passive:true});
   stage.addEventListener('mousemove', () => { toggleChrome(true); clearTimeout(wakeTimer); wakeTimer = setTimeout(() => toggleChrome(false), 2600); });
   stage.addEventListener('dblclick', event => { if (notesPanel.hidden || !notesPanel.contains(event.target)) toggleFullscreen(); });
-  show(current, false);
+  show(current, false, false);
+  connectSync();
   notesButton.setAttribute('aria-pressed', 'false');
   help.hidden = false;
   document.querySelector('#deck').focus();

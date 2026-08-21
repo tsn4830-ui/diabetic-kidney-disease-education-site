@@ -28,7 +28,7 @@ button, select { font: inherit; }
   width: min(720px, 100%);
   min-height: 100vh;
   margin: 0 auto;
-  padding: 14px 14px 96px;
+  padding: 14px 14px 166px;
 }
 
 .speaker-top {
@@ -74,6 +74,51 @@ button, select { font: inherit; }
   text-decoration: none;
 }
 
+.sync-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+  padding: 12px;
+  border: 1px solid rgba(217, 201, 158, .86);
+  border-radius: 16px;
+  background: rgba(255, 253, 246, .94);
+  box-shadow: 0 10px 28px rgba(34, 52, 48, .12);
+}
+
+.sync-card p {
+  margin: 0 0 2px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sync-card strong {
+  display: block;
+  font-size: 28px;
+  line-height: 1;
+  letter-spacing: 1px;
+}
+
+.sync-card span {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sync-card button {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fffdf6;
+  font-weight: 900;
+}
+
 .slide-card {
   display: grid;
   grid-template-columns: 42% 1fr;
@@ -101,6 +146,8 @@ button, select { font: inherit; }
 }
 
 .script-panel {
+  display: flex;
+  flex-direction: column;
   margin-top: 14px;
   border: 1px solid rgba(217, 201, 158, .86);
   border-radius: 18px;
@@ -161,6 +208,11 @@ button, select { font: inherit; }
 #wakeLock.active { background: #a15b42; }
 
 .script-text {
+  max-height: clamp(260px, 47dvh, 620px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
   padding: 18px 18px 22px;
   font-size: var(--script-size, 20px);
   line-height: 1.72;
@@ -199,9 +251,53 @@ button, select { font: inherit; }
   opacity: .42;
 }
 
+.read-controls {
+  position: fixed;
+  left: 50%;
+  bottom: calc(max(10px, env(safe-area-inset-bottom)) + 68px);
+  z-index: 19;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 7px;
+  width: min(720px, calc(100% - 20px));
+  padding: 8px;
+  border: 1px solid rgba(217, 201, 158, .75);
+  border-radius: 18px;
+  background: rgba(255, 253, 246, .94);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, .18);
+  transform: translateX(-50%);
+}
+
+.read-controls button {
+  min-height: 46px;
+  border: 0;
+  border-radius: 12px;
+  background: #e8eadf;
+  color: var(--ink);
+  font-weight: 900;
+}
+
+.read-controls button.active {
+  background: #f0b95c;
+}
+
 @media (max-width: 520px) {
-  .speaker-app { padding-inline: 10px; }
+  .speaker-app {
+    padding-inline: 10px;
+    padding-bottom: 164px;
+  }
   .speaker-top { margin-inline: -10px; }
+  .sync-card {
+    align-items: stretch;
+  }
+  .sync-card strong {
+    font-size: 25px;
+  }
+  .sync-card button {
+    width: 128px;
+    padding-inline: 10px;
+    line-height: 1.15;
+  }
   .slide-card {
     grid-template-columns: 1fr;
   }
@@ -209,10 +305,12 @@ button, select { font: inherit; }
     max-height: 180px;
   }
   .script-text {
+    max-height: clamp(220px, 39dvh, 480px);
     padding: 16px;
     font-size: var(--script-size, 19px);
   }
-  .speaker-controls button {
+  .speaker-controls button,
+  .read-controls button {
     min-height: 46px;
     padding-inline: 6px;
     font-size: 14px;

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#173f3a">
   <title>手機講者稿｜守護「腎」利人生</title>
-  <link rel="stylesheet" href="speaker.css?v=20260821-speaker-script">
+  <link rel="stylesheet" href="speaker.css?v=20260821-speaker-sync">
 </head>
 <body>
   <main class="speaker-app" aria-label="手機講者稿">
@@ -17,8 +17,17 @@
       <a id="projectorLink" class="projector-link" href="index.html#1">投影頁</a>
     </header>
 
+    <section class="sync-card" aria-label="同步設定">
+      <div>
+        <p>同步房號</p>
+        <strong id="roomCode">建立中</strong>
+        <span id="syncStatus">準備同步</span>
+      </div>
+      <button id="copyProjectorLink" type="button">複製投影連結</button>
+    </section>
+
     <section class="slide-card" aria-label="目前投影片">
-      <img id="slideThumb" src="slides/slide-01.png?v=20260821-speaker-script" alt="第 1 張投影片縮圖">
+      <img id="slideThumb" src="slides/slide-01.png?v=20260821-speaker-sync" alt="第 1 張投影片縮圖">
       <div class="slide-info">
         <p id="slideCount">第 1 / 34 張</p>
         <h2 id="slideTitle">載入中</h2>
@@ -44,8 +53,13 @@
       <button id="nextSlide" type="button">下一張</button>
       <button id="lastSlide" type="button">最後</button>
     </nav>
+    <nav class="read-controls" aria-label="逐字稿控制">
+      <button id="scrollScriptUp" type="button">稿上</button>
+      <button id="autoScroll" type="button">自動捲</button>
+      <button id="scrollScriptDown" type="button">稿下</button>
+    </nav>
   </main>
-  <script src="speaker-data.js?v=20260821-speaker-script"></script>
-  <script src="speaker.js?v=20260821-speaker-script"></script>
+  <script src="speaker-data.js?v=20260821-speaker-sync"></script>
+  <script src="speaker.js?v=20260821-speaker-sync"></script>
 </body>
 </html>
