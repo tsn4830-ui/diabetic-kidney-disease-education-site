@@ -1,0 +1,220 @@
+:root {
+  color-scheme: light;
+  --bg: #f4f1e8;
+  --paper: #fffdf6;
+  --ink: #173f3a;
+  --muted: #66756e;
+  --line: #d9c99e;
+  --accent: #3f846b;
+  --accent-dark: #173f3a;
+  --shadow: 0 16px 42px rgba(34, 52, 48, .16);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  min-height: 100%;
+  margin: 0;
+  background: linear-gradient(180deg, #f8f5eb 0%, var(--bg) 44%, #eaf1eb 100%);
+  color: var(--ink);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+}
+
+body { padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); }
+
+button, select { font: inherit; }
+
+.speaker-app {
+  width: min(720px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 14px 14px 96px;
+}
+
+.speaker-top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: -14px -14px 14px;
+  padding: 14px;
+  background: rgba(248, 245, 235, .94);
+  border-bottom: 1px solid rgba(217, 201, 158, .7);
+  backdrop-filter: blur(16px);
+}
+
+.speaker-top p,
+.slide-info p {
+  margin: 0 0 3px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.speaker-top h1,
+.slide-info h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+.speaker-top h1 { font-size: 24px; }
+
+.projector-link {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 42px;
+  padding: 9px 13px;
+  border-radius: 999px;
+  background: var(--accent-dark);
+  color: #fffdf6;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.slide-card {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(217, 201, 158, .86);
+  border-radius: 16px;
+  background: rgba(255, 253, 246, .92);
+  box-shadow: var(--shadow);
+}
+
+.slide-card img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  object-fit: cover;
+  background: #e1e6dc;
+}
+
+.slide-info h2 {
+  font-size: clamp(20px, 5vw, 32px);
+  line-height: 1.2;
+}
+
+.script-panel {
+  margin-top: 14px;
+  border: 1px solid rgba(217, 201, 158, .86);
+  border-radius: 18px;
+  background: rgba(255, 253, 246, .96);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.script-toolbar {
+  position: sticky;
+  top: 72px;
+  z-index: 8;
+  display: grid;
+  grid-template-columns: auto minmax(110px, 1fr) auto auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid rgba(217, 201, 158, .75);
+  background: rgba(255, 253, 246, .96);
+  backdrop-filter: blur(12px);
+}
+
+.script-toolbar label {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.script-toolbar select,
+.script-toolbar button,
+.speaker-controls button {
+  min-height: 40px;
+  border: 0;
+  border-radius: 11px;
+  font-weight: 800;
+  color: var(--ink);
+  background: #e8eadf;
+}
+
+.script-toolbar select {
+  width: 100%;
+  padding: 0 8px;
+  border: 1px solid rgba(23, 63, 58, .18);
+  background: #fffdf6;
+}
+
+.script-toolbar button {
+  min-width: 44px;
+  padding: 0 10px;
+}
+
+#wakeLock {
+  grid-column: 1 / -1;
+  color: #fffdf6;
+  background: var(--accent);
+}
+
+#wakeLock.active { background: #a15b42; }
+
+.script-text {
+  padding: 18px 18px 22px;
+  font-size: var(--script-size, 20px);
+  line-height: 1.72;
+}
+
+.script-text p {
+  margin: 0 0 1em;
+}
+
+.script-text p:last-child { margin-bottom: 0; }
+
+.speaker-controls {
+  position: fixed;
+  left: 50%;
+  bottom: max(10px, env(safe-area-inset-bottom));
+  z-index: 20;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 7px;
+  width: min(720px, calc(100% - 20px));
+  padding: 8px;
+  border: 1px solid rgba(217, 201, 158, .75);
+  border-radius: 18px;
+  background: rgba(23, 63, 58, .92);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, .28);
+  transform: translateX(-50%);
+}
+
+.speaker-controls button {
+  min-height: 48px;
+  color: #fffdf6;
+  background: rgba(255, 255, 255, .16);
+}
+
+.speaker-controls button:disabled {
+  opacity: .42;
+}
+
+@media (max-width: 520px) {
+  .speaker-app { padding-inline: 10px; }
+  .speaker-top { margin-inline: -10px; }
+  .slide-card {
+    grid-template-columns: 1fr;
+  }
+  .slide-card img {
+    max-height: 180px;
+  }
+  .script-text {
+    padding: 16px;
+    font-size: var(--script-size, 19px);
+  }
+  .speaker-controls button {
+    min-height: 46px;
+    padding-inline: 6px;
+    font-size: 14px;
+  }
+}
